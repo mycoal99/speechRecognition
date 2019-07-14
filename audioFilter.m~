@@ -31,6 +31,7 @@ subplot(1,3,3);plot(abs(filteredSound));
 %Feature Extraction: Average frequency
 frequencies = 1:57788;
 frequencies = flipud(rot90(frequencies));
-averageFrequency = sum(frequencies(1:57788/2,:) .* fftMagnitude(1:57788/2,:))/(sum(fftMagnitude(1:57788/2,:)))
+
+averageFrequency = sum(frequencies(:, .* fftMagnitude)/(sum(fftMagnitude))
 
 
