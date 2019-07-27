@@ -2,15 +2,22 @@ clear;
 
 hello1 = audioFilter('michaelTest.wav',800);
 hello2 = audioFilter('andrewTest.wav',800);
-hello3 = audioFilter('andrewRef.wav',800);
+hello3 = audioFilter('scottTest.wav',800);
+
+hello = audioFilter('andrewRef.wav',800);
 
 analyze1 = spectrumAnalysis('michaelTest.wav',2000,hello1.fftMagnitude);
 analyze2 = spectrumAnalysis('andrewTest.wav',2000,hello2.fftMagnitude);
-analyze3 = spectrumAnalysis('andrewRef.wav',2000,hello3.fftMagnitude);
+analyze3 = spectrumAnalysis('scottTest.wav',2000,hello3.fftMagnitude);
 
-result1 = speechFeatureComparison(analyze1.averageFrequency,analyze3.averageFrequency);
-result2 = speechFeatureComparison(analyze2.averageFrequency,analyze3.averageFrequency);
+analyze = spectrumAnalysis('andrewRef.wav',2000,hello.fftMagnitude);
 
-if result1 > result2
-    display('Is this ' 
+result1 = speechFeatureComparison(analyze1.averageFrequency,analyze.averageFrequency);
+result2 = speechFeatureComparison(analyze2.averageFrequency,analyze.averageFrequency);
+result3 = speechFeatureComparison(analyze3.averageFrequency,analyze.averageFrequency);
+
+if result1 < result2
+    disp("Is this " + hello1.fileName);
+else if(
+    disp("Is this " + hello2.fileName);
 end
