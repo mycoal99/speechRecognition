@@ -2,6 +2,7 @@ classdef audioFilter
     properties
         fileName;
         frequencyRange;
+        data;
         fftData;
         fftMagnitude;
         filteredData;
@@ -14,36 +15,27 @@ classdef audioFilter
         function obj = audioFilter(nameValue,rangeValue)
             obj.fileName = nameValue;
             obj.frequencyRange = rangeValue;
-        end
- 
-        %Get data in frequency domain
-        function obj = getFFTData(obj)
+            
+            %Convert to frequency domain
             [data,fs] = audioread(obj.fileName);
+            obj.data = data;
             averageData = (data(:,1) + data(:,2))/2;
             obj.samplingRate = fs;
-            obj.fftData = fft(averageData); 
-        end
-
-        %Get magnitudes of frequency domain
-        function obj = getFFTMagnitude(obj)
-           obj = sqrt(imag(obj.fftData).^2 + real(obj.fftData).^2); 
-        end
-
-        %Construct the filtering matrix for lower and upper spectrum and filter
-        %frequency data
-        function obj = filterFrequency(obj)
+            obj.fftData = fft(averageData);
+            
+            %Calculate magnitude associated with frequency
+            obj.fftMagnitude = sqrt(imag(obj.fftData).^2 + real(obj.fftData).^2);
+            
+            %Construct low pass filter
             lowPassLow = ones(obj.frequencyRange,1);
-            lowPassMiddle = zeros(length(data) - 2*obj.frequencyRange,1);
-            lowPassHigh = ones(frequenctRange,1);
+            lowPassMiddle = zeros(length(obj.fftData) - 2*obj.frequencyRange,1);
+            lowPassHigh = ones(obj.frequencyRange,1);
             lowPass = [lowPassLow;lowPassMiddle;lowPassHigh];
             obj.filteredData = (lowPass .* obj.fftData);
-        end
-
-        %Get data in time domain (from freq.)
-        function obj = getTimeDomain(obj)
+            
+            %Convert data from frequency domain to time domain
             obj.filteredDataTD = ifft(obj.filteredData,'symmetric');
         end
-        
     end
 end
 

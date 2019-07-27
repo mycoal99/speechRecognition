@@ -13,7 +13,7 @@ classdef spectrumAnalysis
             
             frequencies = [1:frequencyRange]';
             for i = 1:floor(frequencyRange/32)
-                obj.averageFrequency = sum(frequencies(16*(i-1)+1:16*(i+1),:)) .* fftMagnitude(16*(i-1)+1:16*(i+1),:)/(sum(fftMagnitude(16*(i-1)+1:16*(i+1),:)));
+                obj.averageFrequency = sum(frequencies(1:frequencyRange,:) .* fftMagnitude(1:frequencyRange,:)/(sum(fftMagnitude(1:frequencyRange,:))));
             end
         end
     end
