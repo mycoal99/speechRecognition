@@ -1,28 +1,52 @@
-fileName = "hello.wav";
-[data,fs] = audioread(fileName);
-plot(data)
+classdef audioFilter
+    properties
+        fileName;
+        frequencyRange;
+        data;
+        fftData;
+        fftMagnitude;
+        filteredData;
+        filteredDataTD;
+        samplingRate;
+    end
+    
+    methods    
+        %Object constructor
+        function obj = audioFilter(nameValue,rangeValue)
+            obj.fileName = nameValue;
+            obj.frequencyRange = rangeValue;
+            
+            %Convert to frequency domain
+            [data,fs] = audioread(obj.fileName);
+            obj.data = data;
+            averageData = (data(:,1) + data(:,2))/2;
+            obj.samplingRate = fs;
+            obj.fftData = fft(averageData);
+            
+            %Calculate magnitude associated with frequency
+            obj.fftMagnitude = sqrt(imag(obj.fftData).^2 + real(obj.fftData).^2);
+            
+            %Construct low pass filter
+            lowPassLow = ones(obj.frequencyRange,1);
+            lowPassMiddle = zeros(length(obj.fftData) - 2*obj.frequencyRange,1);
+            lowPassHigh = ones(obj.frequencyRange,1);
+            lowPass = [lowPassLow;lowPassMiddle;lowPassHigh];
+            obj.filteredData = (lowPass .* obj.fftData);
+            
+            %Convert data from frequency domain to time domain
+            obj.filteredDataTD = ifft(obj.filteredData,'symmetric');
+        end
+    end
+end
 
-%Average of left and right audio channels
-averageData = (data(:,1) + data(:,2))/2;
+% subplot(1,3,1);plot(fftMagnitude);
+% subplot(1,3,2);plot(lowPass);
+% subplot(1,3,3);plot(abs(filteredSound));
 
-%Converting to frequency domain
-fftData = fft(averageData);
+%Post filter sound file
+%soundsc(filteredSound,fs);
 
-%Magnitude for identifying fundamental freq.
-fftMagnitude = [sqrt(imag(fftData).^2 + real(fftData).^2)];
-
-%Construct the filtering matrix for lower and upper spectrum
-lowPassLow = ones(800,1);
-lowPassMiddle = zeros(length(data) - 1600,1);
-lowPassHigh = ones(800,1);
-lowPass = [lowPassLow;lowPassMiddle;lowPassHigh];
-
-%Filters data by frequency
-filteredData = (lowPass .* fftData);
-
-%Bring data back to time domain
-filteredSound = ifft(filteredData,'symmetric');
-
-subplot(1,2,1);plot(fftMagnitude);
-subplot(1,2,2);plot(lowPass);
-soundsc(filteredSound,fs);
+% What the average frequency sounds like
+% tt = [1:1/fs:5];
+% testAudio = sin(2*pi*averageFrequency.*tt);
+% soundsc(testAudio,fs);

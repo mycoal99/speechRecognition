@@ -1,0 +1,20 @@
+classdef spectrumAnalysis
+    properties
+        fileName;
+        frequencyRange;
+        fftMagnitude;
+        averageFrequency;
+    end
+    methods
+        function obj = spectrumAnalysis(fileName,frequencyRange, fftMagnitude)
+            obj.fileName = fileName;
+            obj.frequencyRange = frequencyRange;
+            obj.fftMagnitude = fftMagnitude;
+            
+            frequencies = [1:frequencyRange]';
+            for i = 1:floor(frequencyRange/32)
+                obj.averageFrequency = sum(frequencies(1:frequencyRange,:) .* fftMagnitude(1:frequencyRange,:)/(sum(fftMagnitude(1:frequencyRange,:))));
+            end
+        end
+    end
+end
