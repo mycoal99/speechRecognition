@@ -1,6 +1,6 @@
 # speechRecognition
 
-Purporse of project is to analyze a sound file in terms of frequency to identify and differentiate between possible speakers.
+Purporse of project is to analyze a sound file features to identify and differentiate between possible speakers.
  
 Features analyzed:
   - Average Frequency
